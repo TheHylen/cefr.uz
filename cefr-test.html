@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEFR daraja testi — ingliz tili darajangizni bilib oling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1A2B4C;
+    --ink-soft:#3A4A66;
+    --paper:#F5F3EC;
+    --paper-2:#EDEADF;
+    --gold:#B8862B;
+    --gold-soft:#DDC383;
+    --text:#211F1B;
+    --text-soft:#5B584E;
+    --line:#D8D2C0;
+    --good:#3F7C6E;
+    --bad:#B14B3C;
+    --lvl1:#E8C468;
+    --lvl2:#D9A054;
+    --lvl3:#BA6E4E;
+    --lvl4:#3F7C6E;
+    --lvl5:#245951;
+    --lvl6:#1A2B4C;
+    --radius:6px;
+    --shadow:0 1px 2px rgba(26,43,76,.06), 0 8px 24px rgba(26,43,76,.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(26,43,76,.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    color:var(--ink);
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+  }
+  header.top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:4px 2px 22px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:26px;
+  }
+  header.top .mark{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--ink);
+  }
+  header.top .mark span{color:var(--gold);}
+  header.top .tagline{
+    font-size:.8rem;
+    color:var(--text-soft);
+  }
+  .progress-rail{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+    margin:0 0 34px;
+  }
+  .stamp{
+    width:38px;height:38px;border-radius:50%;
+    border:2px solid var(--line);
+    background:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces', serif;font-weight:600;font-size:.85rem;
+    color:var(--text-soft);
+    flex-shrink:0;
+    transition:all .25s ease;
+  }
+  .stamp.done{border-color:var(--gold);background:var(--gold);color:#fff;}
+  .stamp.now{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px rgba(26,43,76,.1);}
+  .stamp-line{
+    width:34px;height:2px;background:var(--line);
+    flex-shrink:0;
+  }
+  .stamp-labels{
+    display:flex;justify-content:space-between;
+    max-width:280px;margin:8px auto 0;
+    font-size:.68rem;color:var(--text-soft);
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:30px 28px;
+  }
+  .screen{display:none;}
+  .screen.active{display:block;animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .eyebrow{
+    font-size:.78rem;
+    color:var(--gold);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  p.lead{color:var(--text-soft);font-size:.98rem;}
+  .rules{margin:20px 0;padding:0;list-style:none;}
+  .rules li{
+    display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);
+    font-size:.92rem;color:var(--text-soft);
+  }
+  .rules li b{color:var(--text);min-width:26px;font-family:'Fraunces',serif;font-weight:600;}
+
+  button{
+    font-family:'IBM Plex Sans', sans-serif;
+    cursor:pointer;
+    border:none;
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:#fff;
+    padding:13px 26px;
+    border-radius:var(--radius);
+    font-size:.95rem;
+    font-weight:600;
+    transition:background .18s ease, transform .18s ease;
+  }
+  .btn-primary:hover{background:#101d38;}
+  .btn-primary:disabled{background:#C7C2B4;cursor:not-allowed;}
+  .btn-primary:focus-visible, .opt:focus-visible, .btn-ghost:focus-visible, .stamp:focus-visible{
+    outline:3px solid var(--gold-soft);outline-offset:2px;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink-soft);
+    padding:12px 18px;
+    font-size:.92rem;
+    font-weight:500;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+  }
+  .btn-ghost:hover{border-color:var(--ink-soft);}
+  .actions{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px;}
+  .actions.end{justify-content:flex-end;}
+
+  .qhead{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:18px;
+  }
+  .qcount{font-size:.8rem;color:var(--text-soft);}
+  .qtext{font-size:1.15rem;margin:6px 0 22px;color:var(--text);}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:13px 16px;
+    font-size:.95rem;
+    color:var(--text);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt:hover{border-color:var(--ink-soft);}
+  .opt.selected{border-color:var(--ink);background:#EEF0EA;font-weight:600;}
+
+  .listen-box{
+    display:flex;align-items:center;gap:14px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    margin-bottom:20px;
+  }
+  .listen-btn{
+    width:46px;height:46px;border-radius:50%;
+    background:var(--ink);color:#fff;font-size:1.15rem;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .listen-btn:hover{background:#101d38;}
+  .listen-meta{font-size:.82rem;color:var(--text-soft);}
+  .listen-meta b{color:var(--ink);}
+
+  textarea{
+    width:100%;min-height:220px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:.96rem;line-height:1.6;
+    padding:16px;border:1px solid var(--line);border-radius:var(--radius);
+    resize:vertical;color:var(--text);background:var(--paper);
+  }
+  textarea:focus{outline:none;border-color:var(--ink-soft);}
+  .word-meta{
+    display:flex;justify-content:space-between;
+    font-size:.8rem;color:var(--text-soft);margin-top:8px;
+  }
+  .prompt-box{
+    background:var(--paper-2);border-left:3px solid var(--gold);
+    padding:14px 16px;border-radius:4px;font-size:.94rem;margin-bottom:18px;color:var(--ink-soft);
+  }
+
+  /* results */
+  .result-hero{
+    display:flex;align-items:center;gap:26px;flex-wrap:wrap;
+    padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:22px;
+  }
+  .gauge{
+    width:132px;height:132px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+  }
+  .gauge::before{
+    content:"";position:absolute;inset:10px;border-radius:50%;background:#fff;
+  }
+  .gauge-inner{position:relative;text-align:center;}
+  .gauge-inner .lvl{font-family:'Fraunces',serif;font-size:2.3rem;font-weight:700;color:var(--ink);line-height:1;}
+  .gauge-inner .lvl-sub{font-size:.68rem;color:var(--text-soft);margin-top:2px;}
+  .result-hero .desc h2{margin:0 0 6px;font-size:1.3rem;}
+  .result-hero .desc p{margin:0;color:var(--text-soft);font-size:.92rem;max-width:340px;}
+
+  .breakdown{display:flex;flex-direction:column;gap:16px;margin-bottom:6px;}
+  .b-row .b-top{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:6px;}
+  .b-row .b-top b{color:var(--ink);}
+  .b-track{height:8px;background:var(--paper-2);border-radius:4px;overflow:hidden;}
+  .b-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+
+  .note{
+    font-size:.8rem;color:var(--text-soft);
+    background:var(--paper);border:1px dashed var(--line);
+    padding:12px 14px;border-radius:var(--radius);margin-top:22px;
+  }
+  footer{
+    text-align:center;font-size:.78rem;color:var(--text-soft);margin-top:36px;
+  }
+
+  @media (max-width:480px){
+    .card{padding:22px 18px;}
+    .qtext{font-size:1.05rem;}
+    .result-hero{flex-direction:column;text-align:center;}
+    .result-hero .desc p{max-width:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+  @media print{
+    body{background:#fff;}
+    header.top, .progress-rail, .actions, .note, footer, .btn-ghost{display:none !important;}
+    .card{box-shadow:none;border:1px solid #999;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="mark">CEFR<span>·</span>Test</div>
+    <div class="tagline">Ingliz tili darajangizni aniqlang</div>
+  </header>
+
+  <div class="progress-rail" id="progressRail" aria-hidden="true">
+    <div class="stamp now" id="stamp-0">B</div>
+    <div class="stamp-line"></div>
+    <div class="stamp" id="stamp-1">O</div>
+    <div class="stamp-line"></div>
+    <div class="stamp" id="stamp-2">T</div>
+    <div class="stamp-line"></div>
+    <div class="stamp" id="stamp-3">Y</div>
+    <div class="stamp-line"></div>
+    <div class="stamp" id="stamp-4">N</div>
+  </div>
+  <div class="stamp-labels">
+    <span>Boshlash</span><span>O'qish</span><span>Tinglash</span><span>Yozish</span><span>Natija</span>
+  </div>
+
+  <!-- INTRO -->
+  <section class="screen active card" id="screen-intro" style="margin-top:26px;">
+    <p class="eyebrow">Bepul, taxminiy daraja hisoblagich</p>
+    <h1>Ingliz tili darajangiz qaysi bosqichda?</h1>
+    <p class="lead">Ushbu test A1 dan C2 gacha bo'lgan xalqaro CEFR (Common European Framework of Reference) shkalasi asosida darajangizni taxminiy aniqlaydi. Test uchta qismdan iborat: <b>o'qish (Reading)</b>, <b>tinglash (Listening)</b> va <b>yozish (Writing)</b>.</p>
+    <ul class="rules">
+      <li><b>18</b> ta o'qish savoli — turli qiyinlik darajasida, ko'p tanlovli.</li>
+      <li><b>12</b> ta tinglash savoli — brauzeringiz ovoz orqali matnni o'qib beradi.</li>
+      <li><b>1</b> ta yozish topshirig'i — kamida 40 so'zdan iborat matn yozasiz.</li>
+      <li><b>~</b> Jami taxminan 15–20 daqiqa vaqt oladi.</li>
+    </ul>
+    <div class="actions end">
+      <button class="btn-primary" onclick="startTest()">Testni boshlash</button>
+    </div>
+  </section>
+
+  <!-- READING -->
+  <section class="screen card" id="screen-reading">
+    <div class="qhead">
+      <p class="eyebrow" style="margin:0;">O'qish (Reading)</p>
+      <span class="qcount" id="rCount">1 / 18</span>
+    </div>
+    <p class="qtext" id="rQuestion"></p>
+    <div class="opts" id="rOptions"></div>
+    <div class="actions">
+      <button class="btn-ghost" onclick="goIntro()">Chiqish</button>
+      <button class="btn-primary" id="rNext" disabled onclick="nextReading()">Keyingi</button>
+    </div>
+  </section>
+
+  <!-- LISTENING INTRO -->
+  <section class="screen card" id="screen-listen-intro">
+    <p class="eyebrow">Tinglash (Listening)</p>
+    <h2 style="margin-top:0;">Endi tinglash bo'limi</h2>
+    <p class="lead">Har bir savolda "Tinglash" tugmasini bosing — brauzeringiz matnni ingliz tilida ovoz bilan o'qib beradi. Xohlagancha qayta tinglashingiz mumkin. Bu funksiya ishlashi uchun qurilmangiz ovozi yoqilgan bo'lishi va brauzer ovozli sintezni (Speech Synthesis) qo'llab-quvvatlashi kerak.</p>
+    <div class="actions end">
+      <button class="btn-primary" onclick="startListening()">Tinglashni boshlash</button>
+    </div>
+  </section>
+
+  <!-- LISTENING -->
+  <section class="screen card" id="screen-listening">
+    <div class="qhead">
+      <p class="eyebrow" style="margin:0;">Tinglash (Listening)</p>
+      <span class="qcount" id="lCount">1 / 12</span>
+    </div>
+    <div class="listen-box">
+      <button class="listen-btn" id="lPlayBtn" onclick="playListening()" aria-label="Matnni tinglash">🔊</button>
+      <div class="listen-meta">Matnni eshitish uchun tugmani bosing.<br><b id="lPlayedTimes"></b></div>
+    </div>
+    <p class="qtext" id="lQuestion"></p>
+    <div class="opts" id="lOptions"></div>
+    <div class="actions">
+      <button class="btn-ghost" onclick="goIntro()">Chiqish</button>
+      <button class="btn-primary" id="lNext" disabled onclick="nextListening()">Keyingi</button>
+    </div>
+  </section>
+
+  <!-- WRITING -->
+  <section class="screen card" id="screen-writing">
+    <p class="eyebrow">Yozish (Writing)</p>
+    <h2 style="margin-top:0;">Qisqa matn yozing</h2>
+    <div class="prompt-box" id="writingPrompt">
+      O'zingiz, oilangiz va kundalik hayotingiz haqida ingliz tilida kamida 40 so'zdan iborat matn yozing. Nima qilishni yoqtirishingiz, ish yoki o'qishingiz haqida ham yozishingiz mumkin.
+    </div>
+    <textarea id="writingInput" placeholder="Write your text in English here..." oninput="updateWordCount()"></textarea>
+    <div class="word-meta">
+      <span id="wordCount">0 so'z</span>
+      <span id="wordMin">Kamida 40 so'z tavsiya etiladi</span>
+    </div>
+    <div class="actions">
+      <button class="btn-ghost" onclick="goIntro()">Chiqish</button>
+      <button class="btn-primary" id="wSubmit" onclick="submitWriting()">Yakunlash va natijani ko'rish</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="screen card" id="screen-result">
+    <div class="result-hero">
+      <div class="gauge" id="gauge">
+        <div class="gauge-inner">
+          <div class="lvl" id="finalLevel">B1</div>
+          <div class="lvl-sub">CEFR daraja</div>
+        </div>
+      </div>
+      <div class="desc">
+        <h2 id="finalTitle">O'rta darajadan past</h2>
+        <p id="finalDesc">Tavsif shu yerda chiqadi.</p>
+      </div>
+    </div>
+
+    <div class="breakdown">
+      <div class="b-row">
+        <div class="b-top"><span>O'qish (Reading)</span><b id="rLevelLabel">—</b></div>
+        <div class="b-track"><div class="b-fill" id="rBar"></div></div>
+      </div>
+      <div class="b-row">
+        <div class="b-top"><span>Tinglash (Listening)</span><b id="lLevelLabel">—</b></div>
+        <div class="b-track"><div class="b-fill" id="lBar"></div></div>
+      </div>
+      <div class="b-row">
+        <div class="b-top"><span>Yozish (Writing)</span><b id="wLevelLabel">—</b></div>
+        <div class="b-track"><div class="b-fill" id="wBar"></div></div>
+      </div>
+    </div>
+
+    <div class="note">
+      Bu natija taxminiy o'z-o'zini baholash vositasi hisoblanadi va rasmiy CEFR sertifikatiga teng emas. Yozish qismi avtomatik evristik tahlil asosida baholanadi (so'z boyligi, jumla tuzilishi, bog'lovchilar ishlatilishi kabi mezonlar bo'yicha).
+    </div>
+
+    <div class="actions" style="margin-top:20px;">
+      <button class="btn-ghost" onclick="window.print()">Natijani chop etish</button>
+      <button class="btn-primary" onclick="restartTest()">Testni qayta topshirish</button>
+    </div>
+  </section>
+
+  <footer>CEFR · Test — mustaqil ravishda ingliz tili darajasini taxminiy baholash vositasi</footer>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const LVL_NAMES = ["A1","A2","B1","B2","C1","C2"];
+const LVL_COLORS = ["var(--lvl1)","var(--lvl2)","var(--lvl3)","var(--lvl4)","var(--lvl5)","var(--lvl6)"];
+const LVL_TITLES = [
+  "Boshlang'ich daraja",
+  "Elementar daraja",
+  "O'rta darajadan past",
+  "O'rta darajadan yuqori",
+  "Yuqori daraja",
+  "Mukammal daraja"
+];
+const LVL_DESCS = [
+  "Tanish so'z va iboralarni tushunasiz, o'zingiz haqingizda oddiy jumlalar bilan gapira olasiz.",
+  "Kundalik mavzularda oddiy, to'g'ridan-to'g'ri muloqot qila olasiz, tanish vaziyatlarda o'zingizni ifodalaysiz.",
+  "Ish, maktab yoki bo'sh vaqt kabi tanish mavzularda asosiy fikrni tushunib, mustaqil fikr bildira olasiz.",
+  "Murakkab matnlarni tushunasiz, aniq mavzuda ravon va spontan tarzda muloqot qila olasiz.",
+  "Uzun va murakkab matnlarni tushunib, fikrlaringizni erkin va aniq ifodalay olasiz.",
+  "Deyarli barcha eshitgan yoki o'qigan narsani tushunasiz, ona tili darajasiga yaqin ravon so'zlashasiz."
+];
+
+// level index: 0=A1 ... 5=C2
+const READING = [
+  {lvl:0, q:"I ___ a student.", o:["am","is","are","be"], a:0},
+  {lvl:0, q:"She usually ___ up at 7 o'clock.", o:["get","gets","getting","got"], a:1},
+  {lvl:0, q:"My brother ___ two cats.", o:["have","has","haves","having"], a:1},
+  {lvl:1, q:"If it rains tomorrow, we ___ stay at home.", o:["will","would","are","did"], a:0},
+  {lvl:1, q:"Which word does not belong with the others?", o:["apple","banana","chair","orange"], a:2},
+  {lvl:1, q:"I have lived in this city ___ 2015.", o:["since","for","from","at"], a:0},
+  {lvl:2, q:"Despite ___ hard, he failed the exam.", o:["study","studying","studied","to study"], a:1},
+  {lvl:2, q:"By the time we arrived, the film ___.", o:["already started","had already started","already starts","starts already"], a:1},
+  {lvl:2, q:"Which word means 'very tired'?", o:["excited","exhausted","enthusiastic","embarrassed"], a:1},
+  {lvl:3, q:"The report, ___ was published last week, caused controversy.", o:["that","which","who","whom"], a:1},
+  {lvl:3, q:"Had I known about the traffic, I ___ earlier.", o:["would leave","would have left","left","will leave"], a:1},
+  {lvl:3, q:"Which word is closest in meaning to 'reluctant'?", o:["eager","unwilling","delighted","curious"], a:1},
+  {lvl:4, q:"No sooner ___ the train left than it started to rain.", o:["had","did","have","was"], a:0},
+  {lvl:4, q:"Her argument was so ___ that no one could refute it.", o:["comforting","complying","compelling","comparing"], a:2},
+  {lvl:4, q:"___ the difficulties, the project was completed on time.", o:["Despite of","In spite","Notwithstanding","Because"], a:2},
+  {lvl:5, q:"He was clearly ___ about the promotion — you could see it on his face.", o:["over the moon","under the weather","once in a blue moon","back to square one"], a:0},
+  {lvl:5, q:"Choose the most precise synonym for 'ubiquitous'.", o:["rare","omnipresent","occasional","isolated"], a:1},
+  {lvl:5, q:"Were it not for her intervention, the deal ___ collapsed.", o:["would have","will have","would","had"], a:0}
+];
+
+const LISTENING = [
+  {lvl:0, t:"Hello, my name is Anna. I am from Spain. I like pizza.", q:"Where is Anna from?", o:["France","Spain","Italy","Portugal"], a:1},
+  {lvl:0, t:"There are two books on the table and one pen.", q:"How many books are on the table?", o:["One","Two","Three","None"], a:1},
+  {lvl:1, t:"Yesterday I went to the market and bought some apples and bread. Then I cooked dinner for my family.", q:"What did the speaker buy?", o:["Milk and eggs","Meat and rice","Apples and bread","Vegetables only"], a:2},
+  {lvl:1, t:"My favorite season is winter because I love snow and skiing.", q:"Why does the speaker like winter?", o:["Warm weather","Snow and skiing","Swimming","Holidays"], a:1},
+  {lvl:2, t:"Although the weather forecast predicted rain, the football match continued as planned, and the players had to deal with a slippery pitch.", q:"What was the pitch like during the match?", o:["Dry and sunny","Slippery","Frozen","Dusty"], a:1},
+  {lvl:2, t:"She has been working at the hospital for over ten years, and she recently got promoted to head nurse.", q:"What is her new position?", o:["Doctor","Receptionist","Head nurse","Surgeon"], a:2},
+  {lvl:3, t:"The committee has decided to postpone the decision until further research has been conducted, as several members expressed concerns about the environmental impact of the proposal.", q:"Why was the decision postponed?", o:["Lack of funding","Concerns about environmental impact","A change of leadership","Public protest"], a:1},
+  {lvl:3, t:"Despite initial skepticism from investors, the startup managed to secure funding after presenting a revised business plan that addressed previous concerns about scalability.", q:"What did the startup do to secure funding?", o:["Hired new investors","Presented a revised business plan","Cut jobs","Moved offices"], a:1},
+  {lvl:4, t:"The lecturer argued that economic policy should not be evaluated solely by short-term growth figures, but rather by its long-term impact on social equity and environmental sustainability.", q:"What did the lecturer argue?", o:["Policy should focus only on GDP growth","Growth figures are the only measure","Policy should be judged by long-term social and environmental impact","Economic policy is irrelevant"], a:2},
+  {lvl:4, t:"Critics contend that the new legislation, while well-intentioned, fails to address the underlying structural issues and may inadvertently exacerbate existing inequalities.", q:"According to critics, what might the legislation do?", o:["Eliminate all inequality","Worsen existing inequalities","Have no effect at all","Only help wealthy citizens"], a:1},
+  {lvl:5, t:"The philosopher's treatise, dense with allusions to classical rhetoric, posits that genuine autonomy is unattainable without a rigorous, almost ascetic, engagement with one's own presuppositions.", q:"According to the philosopher, what is required for genuine autonomy?", o:["Material wealth","Political power","Rigorous engagement with one's own presuppositions","Social recognition"], a:2},
+  {lvl:5, t:"Notwithstanding the erudition of the panel, the discourse meandered into abstruse tangents that alienated much of the audience, who had anticipated a more accessible exposition.", q:"How did the audience feel about the discussion?", o:["Delighted by its clarity","Bored due to simplicity","Alienated because it was too complex","Indifferent"], a:2}
+];
+
+/* ---------- STATE ---------- */
+let rIndex=0, rAnswers=new Array(READING.length).fill(null);
+let lIndex=0, lAnswers=new Array(LISTENING.length).fill(null), lPlays=new Array(LISTENING.length).fill(0);
+let readingFraction=0, listeningFraction=0, writingLevelIdx=2;
+
+/* ---------- NAV HELPERS ---------- */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+}
+function setStamp(activeIndex, doneUpTo){
+  for(let i=0;i<5;i++){
+    const el=document.getElementById('stamp-'+i);
+    el.classList.remove('now','done');
+    if(i<doneUpTo) el.classList.add('done');
+    if(i===activeIndex) el.classList.add('now');
+  }
+}
+function goIntro(){
+  if(!confirm("Testni tark etmoqchimisiz? Joriy progress saqlanmaydi.")) return;
+  restartTest();
+}
+
+/* ---------- INTRO / START ---------- */
+function startTest(){
+  rIndex=0; rAnswers=new Array(READING.length).fill(null);
+  setStamp(1,1);
+  showScreen('screen-reading');
+  renderReading();
+}
+
+/* ---------- READING ---------- */
+function renderReading(){
+  const item = READING[rIndex];
+  document.getElementById('rCount').textContent = (rIndex+1)+" / "+READING.length;
+  document.getElementById('rQuestion').textContent = item.q;
+  const box = document.getElementById('rOptions');
+  box.innerHTML='';
+  item.o.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(rAnswers[rIndex]===i?' selected':'');
+    b.textContent=opt;
+    b.onclick=()=>selectReading(i);
+    box.appendChild(b);
+  });
+  document.getElementById('rNext').disabled = rAnswers[rIndex]===null;
+  document.getElementById('rNext').textContent = (rIndex===READING.length-1)?"Tinglash bo'limiga o'tish":"Keyingi";
+}
+function selectReading(i){
+  rAnswers[rIndex]=i;
+  renderReading();
+}
+function nextReading(){
+  if(rAnswers[rIndex]===null) return;
+  if(rIndex<READING.length-1){
+    rIndex++;
+    renderReading();
+  } else {
+    let correct=0;
+    READING.forEach((item,i)=>{ if(rAnswers[i]===item.a) correct++; });
+    readingFraction = correct/READING.length;
+    setStamp(2,2);
+    showScreen('screen-listen-intro');
+  }
+}
+
+/* ---------- LISTENING ---------- */
+function startListening(){
+  lIndex=0; lAnswers=new Array(LISTENING.length).fill(null); lPlays=new Array(LISTENING.length).fill(0);
+  showScreen('screen-listening');
+  renderListening();
+}
+function renderListening(){
+  const item = LISTENING[lIndex];
+  document.getElementById('lCount').textContent = (lIndex+1)+" / "+LISTENING.length;
+  document.getElementById('lQuestion').textContent = item.q;
+  document.getElementById('lPlayedTimes').textContent = lPlays[lIndex]>0 ? "Tinglandi: "+lPlays[lIndex]+" marta" : "Hali tinglanmagan";
+  const box = document.getElementById('lOptions');
+  box.innerHTML='';
+  item.o.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(lAnswers[lIndex]===i?' selected':'');
+    b.textContent=opt;
+    b.onclick=()=>selectListening(i);
+    box.appendChild(b);
+  });
+  document.getElementById('lNext').disabled = lAnswers[lIndex]===null;
+  document.getElementById('lNext').textContent = (lIndex===LISTENING.length-1)?"Yozish bo'limiga o'tish":"Keyingi";
+}
+function playListening(){
+  const item = LISTENING[lIndex];
+  if(!('speechSynthesis' in window)){
+    alert("Kechirasiz, brauzeringiz ovozli o'qishni (Speech Synthesis) qo'llab-quvvatlamaydi. Iltimos Chrome yoki Edge kabi zamonaviy brauzerdan foydalaning.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(item.t);
+  u.lang='en-US'; u.rate=0.92; u.pitch=1;
+  window.speechSynthesis.speak(u);
+  lPlays[lIndex]++;
+  document.getElementById('lPlayedTimes').textContent = "Tinglandi: "+lPlays[lIndex]+" marta";
+}
+function selectListening(i){
+  lAnswers[lIndex]=i;
+  renderListening();
+}
+function nextListening(){
+  if(lAnswers[lIndex]===null) return;
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  if(lIndex<LISTENING.length-1){
+    lIndex++;
+    renderListening();
+  } else {
+    let correct=0;
+    LISTENING.forEach((item,i)=>{ if(lAnswers[i]===item.a) correct++; });
+    listeningFraction = correct/LISTENING.length;
+    setStamp(3,3);
+    showScreen('screen-writing');
+    document.getElementById('writingInput').value='';
+    updateWordCount();
+  }
+}
+
+/* ---------- WRITING ---------- */
+function updateWordCount(){
+  const text = document.getElementById('writingInput').value.trim();
+  const words = text.length ? text.split(/\s+/).filter(Boolean) : [];
+  document.getElementById('wordCount').textContent = words.length+" so'z";
+}
+function analyzeWriting(text){
+  const trimmed = text.trim();
+  if(trimmed.length < 15){
+    return 0; // too little to assess -> A1
+  }
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+  const sentences = trimmed.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
+  const sentCount = Math.max(sentences.length,1);
+  const avgSentLen = wordCount / sentCount;
+  const lowerText = trimmed.toLowerCase();
+  const uniqueWords = new Set(words.map(w=>w.toLowerCase().replace(/[^a-z']/g,''))).size;
+  const ttr = uniqueWords / wordCount; // type-token ratio
+  const avgWordLen = words.reduce((s,w)=>s+w.replace(/[^a-zA-Z]/g,'').length,0) / wordCount;
+
+  const connectors = ["although","however","moreover","furthermore","nevertheless","consequently",
+    "whereas","despite","notwithstanding","albeit","on the other hand","therefore","as a result","in spite of"];
+  let connectorHits = 0;
+  connectors.forEach(c=>{ if(lowerText.includes(c)) connectorHits++; });
+
+  const complexPatterns = [/would have/, /had (\w+ )?(\w+ed|been)/, /if only/, /should have/, /might have/,
+    /could have/, /is (\w+ )?(ed|en)\b/, /was (\w+ )?(ed|en)\b/, /has been/, /have been/];
+  let complexHits = 0;
+  complexPatterns.forEach(p=>{ if(p.test(lowerText)) complexHits++; });
+
+  // scoring: 0-100 scale combining signals
+  let score = 0;
+  score += Math.min(wordCount, 120) * 0.35;       // length, capped
+  score += Math.min(avgSentLen, 20) * 1.6;        // sentence complexity
+  score += Math.min(avgWordLen, 7) * 5;           // vocabulary sophistication
+  score += ttr * 40;                               // lexical variety
+  score += connectorHits * 6;                     // cohesive devices
+  score += complexHits * 5;                       // grammatical complexity
+
+  const maxScore = 120*0.35 + 20*1.6 + 7*5 + 40 + 14*6 + 10*5; // theoretical ceiling
+  let frac = Math.min(score/maxScore, 1);
+  return fractionToLevel(frac);
+}
+function submitWriting(){
+  const text = document.getElementById('writingInput').value;
+  if(text.trim().split(/\s+/).filter(Boolean).length < 10){
+    if(!confirm("Matningiz juda qisqa, bu aniq baholashga xalaqit berishi mumkin. Baribir davom etasizmi?")) return;
+  }
+  writingLevelIdx = analyzeWriting(text);
+  setStamp(4,4);
+  showResults();
+}
+
+/* ---------- SCORING ---------- */
+function fractionToLevel(frac){
+  if(frac < 0.15) return 0;
+  if(frac < 0.32) return 1;
+  if(frac < 0.50) return 2;
+  if(frac < 0.68) return 3;
+  if(frac < 0.85) return 4;
+  return 5;
+}
+
+/* ---------- RESULTS ---------- */
+function showResults(){
+  const rLvl = fractionToLevel(readingFraction);
+  const lLvl = fractionToLevel(listeningFraction);
+  const wLvl = writingLevelIdx;
+
+  const composite = (rLvl*0.4 + lLvl*0.3 + wLvl*0.3);
+  const finalIdx = Math.min(5, Math.max(0, Math.round(composite)));
+
+  document.getElementById('finalLevel').textContent = LVL_NAMES[finalIdx];
+  document.getElementById('finalTitle').textContent = LVL_TITLES[finalIdx];
+  document.getElementById('finalDesc').textContent = LVL_DESCS[finalIdx];
+  document.getElementById('gauge').style.background =
+    'conic-gradient('+LVL_COLORS[finalIdx]+' '+((composite/5)*100).toFixed(0)+'%, var(--paper-2) 0)';
+
+  setBar('rBar','rLevelLabel', rLvl, Math.round(readingFraction*100));
+  setBar('lBar','lLevelLabel', lLvl, Math.round(listeningFraction*100));
+  setBar('wBar','wLevelLabel', wLvl, null);
+
+  showScreen('screen-result');
+}
+function setBar(barId, labelId, lvlIdx, pct){
+  document.getElementById(labelId).textContent = LVL_NAMES[lvlIdx];
+  const bar = document.getElementById(barId);
+  const width = pct!==null ? pct : ((lvlIdx+1)/6*100);
+  bar.style.width = width+'%';
+  bar.style.background = LVL_COLORS[lvlIdx];
+}
+
+/* ---------- RESTART ---------- */
+function restartTest(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  rIndex=0; rAnswers=new Array(READING.length).fill(null);
+  lIndex=0; lAnswers=new Array(LISTENING.length).fill(null); lPlays=new Array(LISTENING.length).fill(0);
+  readingFraction=0; listeningFraction=0; writingLevelIdx=2;
+  setStamp(0,0);
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>
